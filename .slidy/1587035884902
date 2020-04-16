@@ -1,0 +1,5 @@
+lib/app/modules/player_music/player_music_module.dart
+lib/app/modules/player_music/player_music_page.dart
+test/app/modules/player_music/player_music_page_test.dart
+lib/app/modules/player_music/player_music_controller.dart
+test/app/modules/player_music/player_music_controller_test.dart

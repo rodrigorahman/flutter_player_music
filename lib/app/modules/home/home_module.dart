@@ -2,11 +2,12 @@ import 'package:flutter_player_music/app/modules/home/home_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_player_music/app/modules/home/home_page.dart';
 import 'package:flutter_player_music/app/modules/player_music/player_music_module.dart';
+import 'package:flutter_player_music/app/repositories/band_repository.dart';
 
 class HomeModule extends ChildModule {
   @override
   List<Bind> get binds => [
-        Bind((i) => HomeController()),
+        Bind((i) => HomeController(i.get<BandRepository>())),
       ];
 
   @override

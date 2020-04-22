@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_player_music/app/models/band_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'home_controller.dart';
 
@@ -15,6 +16,12 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
   //use 'controller' variable to access controller
 
   @override
+  void initState() {
+    super.initState();
+    controller.findAll();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -22,24 +29,53 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
         backgroundColor: Colors.black,
       ),
       backgroundColor: Colors.black,
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (_, int index) {
-          return ListTile(
-            onTap: () => Modular.to.pushNamed('/player', arguments: 'https://images-na.ssl-images-amazon.com/images/I/81bqaMrqceL._AC_SX425_.jpg'),
-            leading: Image.network('https://images-na.ssl-images-amazon.com/images/I/81bqaMrqceL._AC_SX425_.jpg'),
-            title: Text(
-              'Californication',
-              style: GoogleFonts.ptSansCaption(),
-            ),
-            subtitle: Text(
-              'Red Hot Chilli Peppers',
-              style: GoogleFonts.ptSansCaption(),
-            ),
-            contentPadding: EdgeInsets.all(10),
-          );
+      body: FutureBuilder<List<BandModel>>(
+        future: controller.bandsFuture,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            case ConnectionState.done:
+              if (snapshot.hasData) {
+                return _makeListBands(snapshot.data);
+              } else {
+                return Container();
+              }
+              break;
+            default:
+              return Container();
+          }
         },
       ),
+    );
+  }
+
+  ListView _makeListBands(List<BandModel> data) {
+    return ListView.builder(
+      itemCount: data.length,
+      itemBuilder: (_, int index) {
+        var band = data[index];
+        return ListTile(
+          onTap: () => Modular.to.pushNamed('/player', arguments: band),
+          leading: Container(
+              width: 100,
+              child: Image.network(
+            band.image,
+            fit: BoxFit.contain,
+          )),
+          title: Text(
+            band.name,
+            style: GoogleFonts.ptSansCaption(),
+          ),
+          subtitle: Text(
+            band.category,
+            style: GoogleFonts.ptSansCaption(),
+          ),
+          contentPadding: EdgeInsets.all(10),
+        );
+      },
     );
   }
 }

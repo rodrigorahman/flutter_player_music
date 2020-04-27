@@ -14,6 +14,17 @@ mixin _$PlayerMusicController on _PlayerMusicControllerBase, Store {
   @override
   MusicModel get music =>
       (_$musicComputed ??= Computed<MusicModel>(() => super.music)).value;
+  Computed<String> _$totalTimeComputed;
+
+  @override
+  String get totalTime =>
+      (_$totalTimeComputed ??= Computed<String>(() => super.totalTime)).value;
+  Computed<String> _$timeProgressComputed;
+
+  @override
+  String get timeProgress =>
+      (_$timeProgressComputed ??= Computed<String>(() => super.timeProgress))
+          .value;
 
   final _$bandModelAtom = Atom(name: '_PlayerMusicControllerBase.bandModel');
 
@@ -102,6 +113,42 @@ mixin _$PlayerMusicController on _PlayerMusicControllerBase, Store {
     }, _$musicPlayingAtom, name: '${_$musicPlayingAtom.name}_set');
   }
 
+  final _$audioDurationAtom =
+      Atom(name: '_PlayerMusicControllerBase.audioDuration');
+
+  @override
+  Duration get audioDuration {
+    _$audioDurationAtom.context.enforceReadPolicy(_$audioDurationAtom);
+    _$audioDurationAtom.reportObserved();
+    return super.audioDuration;
+  }
+
+  @override
+  set audioDuration(Duration value) {
+    _$audioDurationAtom.context.conditionallyRunInAction(() {
+      super.audioDuration = value;
+      _$audioDurationAtom.reportChanged();
+    }, _$audioDurationAtom, name: '${_$audioDurationAtom.name}_set');
+  }
+
+  final _$timeToMusicAtom =
+      Atom(name: '_PlayerMusicControllerBase.timeToMusic');
+
+  @override
+  Duration get timeToMusic {
+    _$timeToMusicAtom.context.enforceReadPolicy(_$timeToMusicAtom);
+    _$timeToMusicAtom.reportObserved();
+    return super.timeToMusic;
+  }
+
+  @override
+  set timeToMusic(Duration value) {
+    _$timeToMusicAtom.context.conditionallyRunInAction(() {
+      super.timeToMusic = value;
+      _$timeToMusicAtom.reportChanged();
+    }, _$timeToMusicAtom, name: '${_$timeToMusicAtom.name}_set');
+  }
+
   final _$findBandAsyncAction = AsyncAction('findBand');
 
   @override
@@ -116,10 +163,24 @@ mixin _$PlayerMusicController on _PlayerMusicControllerBase, Store {
     return _$playMusicAsyncAction.run(() => super.playMusic());
   }
 
+  final _$_PlayerMusicControllerBaseActionController =
+      ActionController(name: '_PlayerMusicControllerBase');
+
+  @override
+  dynamic changeTimeToMusic(Duration d) {
+    final _$actionInfo =
+        _$_PlayerMusicControllerBaseActionController.startAction();
+    try {
+      return super.changeTimeToMusic(d);
+    } finally {
+      _$_PlayerMusicControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     final string =
-        'bandModel: ${bandModel.toString()},bandFuture: ${bandFuture.toString()},faixa: ${faixa.toString()},audioPlayer: ${audioPlayer.toString()},musicPlaying: ${musicPlaying.toString()},music: ${music.toString()}';
+        'bandModel: ${bandModel.toString()},bandFuture: ${bandFuture.toString()},faixa: ${faixa.toString()},audioPlayer: ${audioPlayer.toString()},musicPlaying: ${musicPlaying.toString()},audioDuration: ${audioDuration.toString()},timeToMusic: ${timeToMusic.toString()},music: ${music.toString()},totalTime: ${totalTime.toString()},timeProgress: ${timeProgress.toString()}';
     return '{$string}';
   }
 }

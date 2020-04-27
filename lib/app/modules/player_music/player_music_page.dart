@@ -4,6 +4,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_player_music/app/models/band_model.dart';
 import 'package:flutter_player_music/app/models/music_model.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:seekbar/seekbar.dart';
 import 'player_music_controller.dart';
 
 class PlayerMusicPage extends StatefulWidget {
@@ -21,13 +22,20 @@ class _PlayerMusicPageState extends ModularState<PlayerMusicPage, PlayerMusicCon
   void initState() {
     super.initState();
     controller.findBand(widget.band.id);
+    controller.audioPlayer.onAudioPositionChanged.listen((d) => controller.changeTimeToMusic(d));
+  }
+
+  @override
+  void dispose() {
+    controller.stopMusic();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tocando Musica ${widget.band.name}'),
+        title: Text('Tocando Música de ${widget.band.name}'),
         backgroundColor: Colors.black,
       ),
       backgroundColor: Colors.black,
@@ -96,21 +104,23 @@ class _PlayerMusicPageState extends ModularState<PlayerMusicPage, PlayerMusicCon
       children: <Widget>[
         Container(
           padding: EdgeInsets.only(left: 35, right: 35, top: 30),
-          child: LinearProgressIndicator(
-            backgroundColor: Colors.white,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
-            value: 0.5,
+          child: SeekBar(
+            value: controller.progressDuration,
+            onStartTrackingTouch: () {},
+            onProgressChanged: (value) {
+              controller.setTimeMusic(value);
+            },
           ),
         ),
         Container(
           padding: EdgeInsets.only(left: 35, right: 35, top: 5),
           child: Row(
             children: <Widget>[
-              Text('0:15'),
+              Text(controller.timeProgress),
               Expanded(
                 child: Container(),
               ),
-              Text('2:00')
+              Text(controller.totalTime)
             ],
           ),
         )
@@ -128,7 +138,7 @@ class _PlayerMusicPageState extends ModularState<PlayerMusicPage, PlayerMusicCon
               Icons.skip_previous,
               size: 70,
             ),
-            onPressed: () {},
+            onPressed: () => controller.previousMusic(),
           ),
           Expanded(
             child: FlatButton(
@@ -144,7 +154,7 @@ class _PlayerMusicPageState extends ModularState<PlayerMusicPage, PlayerMusicCon
               Icons.skip_next,
               size: 70,
             ),
-            onPressed: () {},
+            onPressed: () => controller.nextMusic(),
           )
         ],
       ),

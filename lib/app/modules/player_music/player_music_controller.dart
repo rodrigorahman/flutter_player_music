@@ -1,4 +1,4 @@
-import 'package:audioplayer2/audioplayer2.dart';
+import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter_player_music/app/models/band_model.dart';
 import 'package:flutter_player_music/app/models/music_model.dart';
 import 'package:flutter_player_music/app/repositories/band_repository.dart';
